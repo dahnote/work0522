@@ -19,12 +19,13 @@ createApp({
                   const token=res.data.token;
                   const expired=res.data.expired;
                   document.cookie = `mytoken=${token}; expires=${new Date(expired)}`;
+                  window.location = './html/products.html';
               }else{
                   alert(res.data.message);
               }
             })
             .catch(err => {
-              console.log(err.response)
+              console.log(err.response);
             })
         }
       }
