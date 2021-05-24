@@ -81,7 +81,16 @@
                 <div class="col-sm-4" style="overflow: auto;height: 400PX;">
                   <div class="mb-1">
                     <div class="form-group">
-                      <label for="imageUrl">輸入圖片網址</label>
+                      <label for="imageUrl">主要圖片</label>
+                      <input type="text" class="form-control"
+                             placeholder="請輸入圖片連結"
+                             v-model="productInfo.imageUrl">
+                    </div>
+                  </div>
+                  <img class="img-fluid" :src="productInfo.imageUrl" alt="">
+                  <div class="mb-1">
+                    <div class="form-group">
+                      <label for="imageUrl">輸入多圖片網址</label>
                       <input type="text" class="form-control"
                              placeholder="請輸入圖片連結"
                              v-model="imagesUrl">
@@ -92,7 +101,8 @@
                       新增圖片
                     </button>
                   </div>
-                  <div v-for="(itmm,index) in productInfo.imagesUrl" :key="index">                    <img class="img-fluid" :src="itmm" alt="">
+                  <div v-for="(itmm,index) in productInfo.imagesUrl" :key="index">
+                    <img class="img-fluid" :src="itmm" alt="">
                     <button class="btn btn-outline-danger btn-sm d-block w-100" @click="delImage(index)">
                       刪除圖片
                     </button>
