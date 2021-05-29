@@ -55,7 +55,7 @@
                   <button type="button" class="btn btn-outline-primary btn-sm" @click="editModal('edit',index)">
                     編輯
                   </button>
-                  <button type="button" class="btn btn-outline-danger btn-sm" @click="delModal(item.id)">
+                  <button type="button" class="btn btn-outline-danger btn-sm" @click="delModal(item.id,item.title)">
                     刪除
                   </button>
                 </div>
@@ -67,6 +67,9 @@
       <!-- Modal -->
       <div id="productModal" ref="productModal" class="modal fade" tabindex="-1" aria-labelledby="productModalLabel"
            aria-hidden="true">
+           <div v-if="alertMessage!==''" class="alert alert-danger" role="alert">
+            {{alertMessage}}
+          </div>
         <div class="modal-dialog modal-xl">
           <div class="modal-content border-0">
             <div class="modal-header bg-dark text-white">
@@ -184,7 +187,7 @@
             </div>
             <div class="modal-body">
               是否刪除
-              <strong class="text-danger"></strong> 商品(刪除後將無法恢復)。
+              <strong class="text-danger">{{delProductName}}</strong> 商品(刪除後將無法恢復)。
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal"  @click="delModal('close')">

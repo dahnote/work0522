@@ -15,12 +15,14 @@ createApp({
         mode:'',
         productModal:{},
         delProductModal:{},
+        delProductName:'',
         productId:'',
         productInfo:{
           imagesUrl: [],
           is_enabled:0
         },
-        imagesUrl:[]
+        imagesUrl:[],
+        alertMessage:''
       };
     },
     mounted() {
@@ -38,7 +40,7 @@ createApp({
     methods: {
       getData() {
         ///api/:api_path/admin/products?page=:page
-        axios(`${this.url}/api/${this.api_path}/admin/products/?page=${this.page}`)
+        axios(`${this.url}/api/${this.api_path}/admin/products/`)
           .then((res)=>{
             if (res.data.success){
               this.productsData=res.data.products
@@ -49,7 +51,8 @@ createApp({
           })
        },
       editModal(mode,index){
-        this.mode=mode
+        this.mode=mode;
+        this.alertMessage='';
         if(mode==='create'){
           this.productInfo={};
           this.productInfo.imagesUrl= [];
@@ -61,7 +64,8 @@ createApp({
           this.productModal.show();
         }
       },
-      delModal(id){
+      delModal(id,title){
+        this.delProductName=title;
         if (id==='close'){
           this.delProductModal.hide();
         }else{
@@ -84,7 +88,7 @@ createApp({
             this.productModal.hide();
             this.getData();
           }else{
-            console.log(res.data.message[0]);
+            this.alertMessage=res.data.message[0]
           }
           // this.data.productsData=res.data.products;      
         })
