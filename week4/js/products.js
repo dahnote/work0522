@@ -1,4 +1,5 @@
 import { createApp } from 'https://cdnjs.cloudflare.com/ajax/libs/vue/3.0.9/vue.esm-browser.js';
+import editmodal from '../components/productModal.js'
 // let productModal = null;
 createApp({
     data() {
@@ -11,19 +12,16 @@ createApp({
             password:''
         },
         token:'',
+        productModal:'',
         productsData:[],
-        mode:'',
-        productModal:{},
         delProductModal:{},
         delProductName:'',
-        productId:'',
-        productInfo:{
-          imagesUrl: [],
-          is_enabled:0
-        },
-        imagesUrl:[],
-        alertMessage:''
+        btn:'',
+        editInfo:{}
       };
+    },
+    components:{
+      editmodal
     },
     mounted() {
       this.productModal = new bootstrap.Modal(document.getElementById('productModal'), {
@@ -40,6 +38,7 @@ createApp({
     methods: {
       getData() {
         ///api/:api_path/admin/products?page=:page
+        this.btn='';
         axios(`${this.url}/api/${this.api_path}/admin/products/`)
           .then((res)=>{
             if (res.data.success){
@@ -50,18 +49,17 @@ createApp({
             console.log(err.response);
           })
        },
-      editModal(mode,index){
-        this.mode=mode;
-        this.alertMessage='';
-        if(mode==='create'){
-          this.productInfo={};
-          this.productInfo.imagesUrl= [];
-          this.productInfo.is_enabled=0;
+      editModal(btn,index){
+        console.log(btn)
+        this.btn='';
+        if(btn==='create'){
+          this.btn=btn;
           this.productModal.show();
         }else{
-          this.productId=this.productsData[index].id;
-          this.productInfo={...this.productsData[index]};
+          this.btn=btn;
           this.productModal.show();
+          this.editInfo={...this.productsData[index]};
+          // this.productModal.show();
         }
       },
       delModal(id,title){
@@ -72,45 +70,6 @@ createApp({
           this.productId=id;
           this.delProductModal.show();
         }
-      },
-      processingflow(){
-        if(this.mode==='create'){
-          this.createProducet()
-        }else if(this.mode==='edit'){
-          this.updateProducet()
-        }
-      },
-      createProducet(){
-        axios.post(`${this.url}/api/${this.api_path}/admin/product`,{ "data": this.productInfo})
-        .then((res)=>{
-          if (res.data.success){
-            alert(res.data.message);
-            this.productModal.hide();
-            this.getData();
-          }else{
-            this.alertMessage=res.data.message[0]
-          }
-          // this.data.productsData=res.data.products;      
-        })
-        .catch(err => {
-          console.log(err.response);
-        })
-      },
-      updateProducet(){
-        axios.put(`${this.url}/api/${this.api_path}/admin/product/${this.productId}`,{ "data": this.productInfo})
-        .then((res)=>{
-          if (res.data.success){
-            alert(res.data.message);
-            this.productModal.hide();
-            this.getData();
-          }else{
-            console.log(res.data.message[0]);
-          }
-          // this.data.productsData=res.data.products;      
-        })
-        .catch(err => {
-          console.log(err.response);
-        })
       },
       deleteProducet(){
         axios.delete(`${this.url}/api/${this.api_path}/admin/product/${this.productId}`)
