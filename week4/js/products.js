@@ -1,12 +1,15 @@
 import { createApp } from 'https://cdnjs.cloudflare.com/ajax/libs/vue/3.0.9/vue.esm-browser.js';
 import editmodal from '../components/productModal.js'
-// let productModal = null;
+import deletemodal from '../components/deleteModal.js'
+import pagination from '../components/pagination.js'
+
 createApp({
     data() {
       return {
         url: 'https://vue3-course-api.hexschool.io',
         api_path:'hua1993',
-        page:'1',
+        page:1,
+        pagination:{},
         loginData:{
             username:'',
             password:''
@@ -15,13 +18,16 @@ createApp({
         productModal:'',
         productsData:[],
         delProductModal:{},
-        delProductName:'',
+        delProductObj:{
+          productId:'',
+          productName:'',
+        },
         btn:'',
         editInfo:{}
       };
     },
     components:{
-      editmodal
+      editmodal,deletemodal,pagination
     },
     mounted() {
       this.productModal = new bootstrap.Modal(document.getElementById('productModal'), {
@@ -36,13 +42,20 @@ createApp({
       
     },
     methods: {
-      getData() {
+      getData(item) {
+        if (item!==undefined){
+          this.page=item;
+        }
         ///api/:api_path/admin/products?page=:page
         this.btn='';
-        axios(`${this.url}/api/${this.api_path}/admin/products/`)
+        axios(`${this.url}/api/${this.api_path}/admin/products/?page=${this.page}`)
           .then((res)=>{
             if (res.data.success){
-              this.productsData=res.data.products
+              this.productsData=res.data.products;
+              this.pagination=res.data.pagination;
+              if (this.page>this.pagination.total_pages){
+                this.page-=1;
+              }
             }
           })
           .catch(err => {
@@ -50,10 +63,13 @@ createApp({
           })
        },
       editModal(btn,index){
-        console.log(btn)
+        // console.log(btn)
         this.btn='';
         if(btn==='create'){
           this.btn=btn;
+          this.editInfo={};
+          this.editInfo['imagesUrl']= [];
+          this.editInfo['is_enabled']=0;
           this.productModal.show();
         }else{
           this.btn=btn;
@@ -63,37 +79,13 @@ createApp({
         }
       },
       delModal(id,title){
-        this.delProductName=title;
         if (id==='close'){
           this.delProductModal.hide();
         }else{
-          this.productId=id;
+          this.delProductObj.productId=id;
+          this.delProductObj.productName=title;
           this.delProductModal.show();
         }
-      },
-      deleteProducet(){
-        axios.delete(`${this.url}/api/${this.api_path}/admin/product/${this.productId}`)
-          .then((res)=>{
-            // console.log(res);
-            alert(res.data.message);
-            if (res.data.success){
-              this.delProductModal.hide();
-              this.getData();
-            }
-          })
-          .catch(err => {
-            console.log(err.response);
-          })
-      },
-      addImage(){
-        if (this.imagesUrl!==''){
-          this.productInfo.imagesUrl.push(this.imagesUrl);
-          this.imagesUrl='';
-        }
-      },
-      delImage(index){
-        this.productInfo.imagesUrl.splice(index, 1);
       }
-
     },
   }).mount('#app');

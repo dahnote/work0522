@@ -4,10 +4,7 @@ export default{
             url: 'https://vue3-course-api.hexschool.io',
             api_path:'hua1993',
             imagesUrl:[],
-            productInfo:{
-              imagesUrl: [],
-              is_enabled:0
-            },
+            productInfo:{},
             productId:'',
             alertMessage:'',
             // mode:''
@@ -19,16 +16,9 @@ export default{
         mounted() {
         },
         watch: {
-          mode() {
-            if(this.mode==='create'){
-              this.productInfo={};
-              this.productInfo.imagesUrl= [];
-              this.productInfo.is_enabled=0;
-            }
-          },
           editInfo(){
+            this.alertMessage='';
             this.productInfo={...this.editInfo};
-            // console.log(this.editInfo)
           }
         },
         methods: {
