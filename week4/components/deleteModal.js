@@ -6,7 +6,7 @@ export default{
           };
         },
         props:[
-          'delProductModal','delProductObj'
+          "delProductModal","delProductObj"
         ],
         mounted() {
         },

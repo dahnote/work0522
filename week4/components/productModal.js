@@ -3,7 +3,7 @@ export default{
           return {
             url: 'https://vue3-course-api.hexschool.io',
             api_path:'hua1993',
-            imagesUrl:[],
+            imagesUrl:'',
             productInfo:{},
             productId:'',
             alertMessage:'',
@@ -11,12 +11,13 @@ export default{
           };
         },
         props:[
-          'mode','productModal','editInfo'
+          "mode","productModal","editInfo"
         ],
         mounted() {
         },
         watch: {
           editInfo(){
+            this.imagesUrl='';
             this.alertMessage='';
             this.productInfo={...this.editInfo};
           }

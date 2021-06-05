@@ -74,7 +74,11 @@ createApp({
         }else{
           this.btn=btn;
           this.productModal.show();
+          
           this.editInfo={...this.productsData[index]};
+          if (this.editInfo.imagesUrl===undefined){
+            this.editInfo.imagesUrl=[];
+          }
           // this.productModal.show();
         }
       },

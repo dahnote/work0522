@@ -16,8 +16,8 @@ createApp({
             .then((res)=>{
               if (res.data.success){
                   alert(res.data.message);
-                  const token=res.data.token;
-                  const expired=res.data.expired;
+                  const [token,expired]=[res.data.token,res.data.expired];
+                  // const expired=res.data.expired;
                   document.cookie = `mytoken=${token}; expires=${new Date(expired)}`;
                   window.location = './html/products.html';
               }else{
