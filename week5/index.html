@@ -44,7 +44,7 @@
                   <button type="button" class="btn btn-outline-primary btn-sm" @click="editModal('edit',index)">
                     詳細資訊
                   </button>
-                  <button type="button" class="btn btn-outline-danger btn-sm" @click="delModal(item.id,item.title)">
+                  <button type="button" class="btn btn-outline-danger btn-sm" @click="addCart(item.id)">
                     加入購物車
                   </button>
                 </div>
@@ -55,6 +55,35 @@
         <pagination :pagination=pagination :page=page @refesh="getData"></pagination>
       </div>
       <infomodal ref="infoComponent" :info-id="infoId"></infomodal>
+      <div class="container">
+        <div class="h2">購物車列表</div>
+        <table class="table mt-4">
+          <thead>
+            <tr>
+              <th>品名</th>
+              <th width="150">數量</th>
+              <th>總價</th>
+              <th>編輯</th>
+            </tr>
+          </thead>
+          <tr v-for="(item,index) in cartData" :key="item.id">
+            <td>{{item.product.title}}</td>
+            <td>
+              <div class="input-group input-group-sm">
+                <div class="input-group">
+                  <input v-model.number="item.qty" min="1" type="number" class="form-control" @blur=updataCart(index)>
+                </div>
+              </div>
+            </td>
+            <td>{{item.total}}</td>
+            <td>
+              <button type="button" class="btn btn-outline-danger btn-sm" @click="deleteItem(item.id)">
+                刪除
+            </button>
+          </td>
+          </tr>
+        </table>
+      </div>
     </div>
 
     <script src='https://cdnjs.cloudflare.com/ajax/libs/axios/0.9.1/axios.min.js'
