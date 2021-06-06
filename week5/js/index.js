@@ -1,8 +1,21 @@
-import { createApp } from 'https://cdnjs.cloudflare.com/ajax/libs/vue/3.0.9/vue.esm-browser.js';
 import infomodal from '../components/infomodal.js'
 import pagination from '../components/pagination.js'
 
-createApp({
+const { defineRule, Form, Field, ErrorMessage, configure } = VeeValidate;
+const { required, email, min, max } = VeeValidateRules;
+const { localize, loadLocaleFromURL } = VeeValidateI18n;
+defineRule('required', required);
+defineRule('email', email);
+defineRule('min', min);
+defineRule('max', max);
+
+loadLocaleFromURL('https://unpkg.com/@vee-validate/i18n@4.1.0/dist/locale/zh_TW.json');
+VeeValidate.configure({
+  generateMessage: VeeValidateI18n.localize('zh_TW'),
+  validateOnInput: true, // 調整為輸入字元立即進行驗證
+});
+
+Vue.createApp({
     data() {
       return {
         url: 'https://vue3-course-api.hexschool.io',
@@ -11,11 +24,22 @@ createApp({
         pagination:{},
         productsData:[],
         cartData:[],
-        infoId:''
-      };
+        final_total:0,      
+        infoId:'',
+        user: {
+            name: '',
+            email: '',
+            tel: '',
+            address: '',
+        },
+        message: ""
+      }
     },
     components:{
-      infomodal,pagination
+      infomodal,pagination,
+      VForm: Form,
+      VField: Field,
+      ErrorMessage: ErrorMessage,
     },
     mounted() {
       this.getData();
@@ -27,7 +51,6 @@ createApp({
           this.page=item;
         }
         ///api/:api_path/admin/products?page=:page
-        this.btn='';
         axios(`${this.url}/api/${this.api_path}/products/?page=${this.page}`)
           .then((res)=>{
             if (res.data.success){
@@ -46,8 +69,10 @@ createApp({
         axios(`${this.url}/api/${this.api_path}/cart`)
           .then((res)=>{
             if (res.data.success){
-              // console.log(res.data);
               this.cartData=res.data.data.carts;
+              this.final_total=res.data.data.final_total;
+            }else{
+              alert(res.data.message); 
             }
           })
           .catch(err => {
@@ -63,9 +88,8 @@ createApp({
             alert(res.data.message);
             this.getCart();
           }else{
-            this.alertMessage=res.data.message[0];
+            alert(res.data.message);          
           }
-          // this.data.productsData=res.data.products;      
         })
         .catch(err => {
           console.log(err.response);
@@ -103,9 +127,24 @@ createApp({
           console.log(err.response);
         })
       },
-      editModal(btn,index){
+      editModal(index){
         this.infoId=this.productsData[index].id;
-        this.$refs.infoComponent.open();
+        this.$refs.infoComponent.open(this.infoId);
+      },
+      onSubmit(){
+        const postData={ "user": this.user,"message":this.message};
+        axios.post(`${this.url}/api/${this.api_path}/order`,{ "data":postData })
+        .then((res)=>{
+          if (res.data.success){
+            alert(res.data.message);
+            this.$refs.order.resetForm();
+          }else{
+            alert(res.data.message);          
+          }
+        })
+        .catch(err => {
+          console.log(err.response);
+        })
       }
     },
   }).mount('#app');
