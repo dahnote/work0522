@@ -41,11 +41,13 @@
               <!-- <td class="text-end">{{item.price}}</td> -->
               <td>
                 <div class="btn-group">
-                  <button type="button" class="btn btn-outline-primary btn-sm" @click="editModal(index)">
+                  <button type="button" class="btn btn-outline-primary btn-sm" @click="infoOpen(index)">
                     詳細資訊
+                    <span v-if="spinnerId===index" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                   </button>
                   <button type="button" class="btn btn-outline-danger btn-sm" @click="addCart(item.id)">
                     加入購物車
+                    <span v-if="spinnerId===item.id" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                   </button>
                 </div>
               </td>
@@ -56,10 +58,15 @@
       </div>
       <div class="container">
         <div class="h2">購物車列表</div>
+        <button type="button" class="btn btn-outline-danger btn-sm" :class="{disabled:spinnerClearCart}" @click="clearCart">
+          清空購物車
+          <span v-if="spinnerClearCart"  class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+        </button>
         <table class="table mt-4">
           <thead>
             <tr>
               <th>品名</th>
+              <th>單價</th>
               <th width="150">數量</th>
               <th>總價</th>
               <th>編輯</th>
@@ -68,6 +75,7 @@
           <tbody>
             <tr v-for="(item,index) in cartData" :key="item.id">
               <td>{{item.product.title}}</td>
+              <td>{{item.product.price}}</td>
               <td>
                 <div class="input-group input-group-sm">
                   <div class="input-group">
@@ -91,6 +99,7 @@
         </table>
         <div class="my-5 row justify-content-center">
           <div class="h2">預訂資料</div>
+          
           <v-form ref="order" class="col-md-6" v-slot="{ errors }" @submit="onSubmit">
             <div class="mb-3">
               <label for="name" class="form-label">姓名</label>

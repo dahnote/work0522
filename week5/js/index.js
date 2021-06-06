@@ -26,6 +26,8 @@ Vue.createApp({
         cartData:[],
         final_total:0,      
         infoId:'',
+        spinnerId:"",
+        spinnerClearCart:false,
         user: {
             name: '',
             email: '',
@@ -80,7 +82,7 @@ Vue.createApp({
           })
       },
       addCart(id){
-        // console.log(id);
+        this.spinnerId=id;
         const postData={ product_id: id,"qty":1};
         axios.post(`${this.url}/api/${this.api_path}/cart`,{ "data":postData })
         .then((res)=>{
@@ -90,8 +92,10 @@ Vue.createApp({
           }else{
             alert(res.data.message);          
           }
+          this.spinnerId="";
         })
         .catch(err => {
+          this.spinnerId="";
           console.log(err.response);
         })
       },
@@ -113,6 +117,7 @@ Vue.createApp({
         })
       },
       deleteItem(id){
+        
         axios.delete(`${this.url}/api/${this.api_path}/cart/${id}`)
         .then((res)=>{
           // console.log(res);
@@ -121,13 +126,31 @@ Vue.createApp({
             this.getCart();
           }else{
             alert(res.data.message);
-          }
+          }         
         })
         .catch(err => {
           console.log(err.response);
         })
       },
-      editModal(index){
+      clearCart(){
+        this.spinnerClearCart=true;
+        axios.delete(`${this.url}/api/${this.api_path}/carts`)
+        .then((res)=>{
+          // console.log(res);
+          if (res.data.success){
+            alert(res.data.message);
+            this.getCart();
+          }else{
+            alert(res.data.message);
+          }
+          this.spinnerClearCart=false
+        })
+        .catch(err => {
+          this.spinnerClearCart=false
+          console.log(err.response);
+        })
+      },
+      infoOpen(index){
         this.infoId=this.productsData[index].id;
         this.$refs.infoComponent.open(this.infoId);
       },
